@@ -181,6 +181,9 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "docker-compose.production.yml"
           target: "taski"
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
       - name: Executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
