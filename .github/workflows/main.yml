@@ -170,6 +170,12 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+      - name: Debug SSH key format
+        run: |
+          echo "=== SSH Key Debug ==="
+          echo "Key starts with: $(echo "${{ secrets.SSH_KEY }}" | head -c 50)..."
+          echo "Key ends with: ...$(echo "${{ secrets.SSH_KEY }}" | tail -c 50)"
+          echo "Key line count: $(echo "${{ secrets.SSH_KEY }}" | wc -l)"
       # Копируем docker-compose.production.yml на продакшен-сервер
       - name: Copy docker-compose.yml via ssh
         uses: appleboy/scp-action@master
