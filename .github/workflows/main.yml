@@ -173,9 +173,32 @@ jobs:
       - name: Debug SSH key format
         run: |
           echo "=== SSH Key Debug ==="
-          echo "Key starts with: $(echo "${{ secrets.SSH_KEY }}" | head -c 50)..."
-          echo "Key ends with: ...$(echo "${{ secrets.SSH_KEY }}" | tail -c 50)"
-          echo "Key line count: $(echo "${{ secrets.SSH_KEY }}" | wc -l)"
+          echo "Raw secret first 50 chars:"
+          echo "${{ secrets.SSH_KEY }}" | head -c 50
+          echo ""
+          echo "Raw secret last 50 chars:"
+          echo "${{ secrets.SSH_KEY }}" | tail -c 50
+          echo ""
+          echo "Line count: $(echo "${{ secrets.SSH_KEY }}" | wc -l)"
+          echo ""
+          echo "=== Attempt to recreate key ==="
+    
+          # Пробуем разные методы сохранения
+    
+          # Метод 1: Прямое сохранение
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa_direct
+          chmod 600 ~/.ssh/id_rsa_direct
+          echo "Method 1 - first line:"
+          head -n 1 ~/.ssh/id_rsa_direct
+    
+          # Метод 2: Сохранение через временный файл
+          printf '%s' "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa_printf
+          chmod 600 ~/.ssh/id_rsa_printf
+          echo "Method 2 - first line:"
+          head -n 1 ~/.ssh/id_rsa_printf
+    
+          # Метод 3: С base64
+          echo "Method 3 would need base64 encoded secret"
       # Копируем docker-compose.production.yml на продакшен-сервер
       - name: Copy docker-compose.yml via ssh
         uses: appleboy/scp-action@master
